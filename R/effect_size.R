@@ -33,7 +33,7 @@ effect_size <- function(result, ps, nburnin,niter, mode="mean",level="Genus"){
   }
   mytax <- as.data.frame(tax_table(ps1))
   if (nrow(result$betahat) != nrow(mytax)) {
-    stop("please keep your result and phyloseq subject align")
+    stop("please re-enter level to keep your result and phyloseq subject align")
   }
   
   ## extract betahat and frequencies from result
