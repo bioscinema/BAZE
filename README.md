@@ -47,6 +47,9 @@ create_tax(ps,"test_tax.txt")
 ### Generate overall annotation file
 create_tax_annot(ps,"test_annot.txt")
 
+![test](https://github.com/bioscinema/BAZE/assets/90227639/d15e1c3e-b202-43e1-b782-ca70c9b8415e)
+
+
 ### Generate annotation file with selected taxa
 create_tax_selected(ps,nburnin = 10000,niter = 5000,result = result,annotation_file = "test_select.txt")
 
