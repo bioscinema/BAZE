@@ -17,6 +17,16 @@ devtools::install_github("bioscinema/BAZE")
 
 Here's a basic example of how to use the functions from the BAZE package:
 
+First, you can generate overall taxonomy tree files and view the data.
+```r
+## Generate annotation files for GraPhlAn
+### Generate taxonomy tree file 
+create_tax(ps,"test_tax.txt")
+
+### Generate overall annotation file
+create_tax_annot(ps,"test_annot.txt")
+```
+![test](https://github.com/bioscinema/BAZE/assets/90227639/d15e1c3e-b202-43e1-b782-ca70c9b8415e)
 ```r
 ## Load package
 library(BAZE)
@@ -39,15 +49,7 @@ p
 ```
 ![image](https://github.com/bioscinema/BAZE/assets/90227639/8862813d-2589-486a-b5ae-b3a824590013)
 
-```r
-## Generate annotation files for GraPhlAn
-### Generate taxonomy tree file 
-create_tax(ps,"test_tax.txt")
 
-### Generate overall annotation file
-create_tax_annot(ps,"test_annot.txt")
-```
-![test](https://github.com/bioscinema/BAZE/assets/90227639/d15e1c3e-b202-43e1-b782-ca70c9b8415e)
 
 ```r
 ### Generate annotation file with selected taxa
