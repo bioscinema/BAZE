@@ -19,6 +19,9 @@ Here's a basic example of how to use the functions from the BAZE package:
 
 First, you can generate overall taxonomy tree files and view the data.
 ```r
+## Load package
+library(BAZE)
+
 ## Generate annotation files for GraPhlAn
 ### Generate taxonomy tree file 
 create_tax(ps,"test_tax.txt")
@@ -28,8 +31,7 @@ create_tax_annot(ps,"test_annot.txt")
 ```
 ![test](https://github.com/bioscinema/BAZE/assets/90227639/d15e1c3e-b202-43e1-b782-ca70c9b8415e)
 ```r
-## Load package
-library(BAZE)
+
 
 ## Perform main analysis within BAZE algorithm (when you install package, there will be a phyloseq named "ps" in BAZE package)
 result <- result(ps, nburnin=10000, niter=5000, a=-9, level="Genus", response="bmi")
