@@ -98,7 +98,7 @@ create_tax_annot <- function(ps, annotation_file, level="Genus"){
     writeLines(paste(paste(Kingdom, Phylum, sep = "."), "annotation_background_color", color,sep = "\t"), file_conn)
     writeLines(paste(paste(Kingdom, Phylum, sep = "."), "annotation",Phylum, sep = "\t"), file_conn)
     writeLines(paste(paste(Kingdom, Phylum, sep = "."), "annotation_rotation","90", sep = "\t"), file_conn)
-    writeLines(paste(paste(Kingdom, Phylum, sep = "."),"annotation_font_size","10", sep = "\t"), file_conn)
+    writeLines(paste(paste(Kingdom, Phylum, sep = "."),"annotation_font_size","18", sep = "\t"), file_conn)
     # writeLines(paste(paste(Kingdom, Phylum, Class,sep = "."),"annotation", paste0(first_letter_class,":",Class), sep = "\t"), file_conn)
     writeLines(paste(paste(Kingdom, Phylum, Class,sep = "."),"annotation_background_color", color, sep = "\t"), file_conn)
     # writeLines(paste(class, "annotation_rotation","90", sep = "\t"), file_conn)
