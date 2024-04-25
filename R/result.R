@@ -94,8 +94,8 @@ result <-
       au=0
       # a0=a
       # a0 = seq(from = al, to = au, by = (au-al) / ss)
-      # a <- rep(a0,p)
+      a0 <- rep(a,p)
 
-      result <- gibbsgamma(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega, seed, TRUE, stand, TRUE)
+      result <- gibbsgamma(nburnin, niter, p, nop, Y, X, N, a0, Q, n, tau, nu, omega, seed, TRUE, stand, TRUE)
       return(result)
   }
