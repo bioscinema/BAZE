@@ -32,6 +32,10 @@
 #' @import dplyr
 #' @export
 aggregate_plot <- function(nburnin, niter , result, taxa_table, level = "Phylum", label_size=10){
+  ##aggregate ps to specific level
+  if (length(result$gammaresult) != nrow(taxa_table)){
+    stop("Please ensure your result and taxa table are at the same level")
+  }else{
   ## calculate the negative counts for beta
   betahat <- result$betahat[,nburnin:(nburnin+niter)]
   betahat_n <- which(betahat<0, arr.ind = TRUE)
@@ -89,9 +93,13 @@ aggregate_plot <- function(nburnin, niter , result, taxa_table, level = "Phylum"
     scale_x_discrete("Groups",
                      breaks = unique(interaction(df$group)),
                      labels = rep(paste(df_summary$group, "(counts=", df_summary$counts, ")", sep = ""), each = 1)) +
+    ylim(0, 1) +
+    geom_hline(yintercept = 0.5, linetype = "dashed", color = "red") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1),
           axis.ticks.x = element_line(color = "black", linewidth = 0.5),
           axis.ticks.length = unit(0.25, "cm"),
           strip.text.x = element_text(size=label_size))
   print(p)
+  }
+
 }
