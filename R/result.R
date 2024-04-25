@@ -69,7 +69,7 @@ result <-
       c = 100
       N <- rbind(diag(p), rep(c, p)) %*% diag(1/stand$Sx)
 
-      nop <- floor(n/2)
+      nop <- floor(min(n,p)/2)
 
       ## prepare phylogentic matrix
       Q1 <- vcv(phy_tree(ps1))

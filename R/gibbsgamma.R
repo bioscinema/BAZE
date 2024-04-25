@@ -51,11 +51,10 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
 
   # Initialize index, nop is the number of initial 1's
   # Sample with replacement, p more than nop
-  if (p > nop) {
-    index <- sample(1:p, nop, replace = FALSE)
-  } else {
-    index <- sample(1:p, nop, replace = TRUE)
-  }
+
+  index <- sample(1:p, nop, replace = FALSE)
+
+
   index <- sort(index)
   nop <- length(index)
 

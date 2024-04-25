@@ -30,6 +30,11 @@
 #' @importFrom phyloseq tax_table otu_table
 #' @export
 create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, level="Genus"){
+  if (is.null(level)){
+    ps <- ps
+  }else{
+    ps <- tax_glom(ps,taxrank = level)
+  }
   mytax <- as.data.frame(tax_table(ps))
   myotu <- as.data.frame(otu_table(ps))
   ## calculate the negative counts for beta
