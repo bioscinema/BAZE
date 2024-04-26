@@ -37,9 +37,9 @@ effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
   p <- ggplot(effect_size, aes(x = reorder(taxa, effect_size), y = effect_size, fill=Sign)) +
     geom_col(color="black", width = 0.7) +  # Using geom_col which is geom_bar(stat = "identity")
     coord_flip() +  # Flip coordinates for horizontal bars
-    scale_fill_manual(values = c("Negative" = "red", "Positive" = "blue"),
-                      name = "Effect Sign",
-                      labels = c("Negative", "Positive")) +
+    # scale_fill_manual(values = c("Negative" = "red", "Positive" = "blue"),
+    #                   name = "Effect Sign",
+    #                   labels = c("Negative", "Positive")) +
     labs(x = "Taxa", y = "Effect Size", title = "Effect Size Plot") +
     theme_minimal() +
     theme(legend.position = "bottom")
