@@ -29,11 +29,15 @@ effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
   ##calculate effect size
   effect_size <- effect_size(result, ps, nburnin, niter, mode=mode,level=level)
 
+  ##add a sign column
+  effect_size$Sign <- ifelse(effect_size$effect_size > 0, "Positive", "Negative")
+
+
   ##generate effect size plot
-  p <- ggplot(effect_size, aes(x = reorder(taxa, effect_size), y = effect_size)) +
-    geom_col(aes(fill = effect_size > 0),color="black", width = 0.7) +  # Using geom_col which is geom_bar(stat = "identity")
+  p <- ggplot(effect_size, aes(x = reorder(taxa, effect_size), y = effect_size, fill=Sign)) +
+    geom_col(color="black", width = 0.7) +  # Using geom_col which is geom_bar(stat = "identity")
     coord_flip() +  # Flip coordinates for horizontal bars
-    scale_fill_manual(values = c("red", "blue"),
+    scale_fill_manual(values = c("Negative" = "red", "Positive" = "blue"),
                       name = "Effect Sign",
                       labels = c("Negative", "Positive")) +
     labs(x = "Taxa", y = "Effect Size", title = "Effect Size Plot") +
