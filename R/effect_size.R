@@ -49,7 +49,7 @@ effect_size <- function(result, ps, nburnin,niter, mode="mean",level="Genus"){
   if (mode == "mean") {
     betahat_s$effect = rowMeans(betahat_s[,(nburnin+3):ncol(betahat_s)])
   } else if(mode=="median"){
-    betahat_s$effect = median(betahat_s[,(nburnin+3):ncol(betahat_s)])
+    betahat_s$effect <- apply(betahat_s[,(nburnin+3):ncol(betahat_s)], 1, median)
   }
   
   ##generate effect size data frame and order it
