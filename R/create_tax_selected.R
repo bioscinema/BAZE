@@ -44,18 +44,22 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   } else {
     stop("Please check your result and level, make sure they are at the same level.")
   }
-  ## calculate the negative counts for beta
-  betahat <- result$betahat[,nburnin:(nburnin+niter)]
-  rownames(betahat) <- rownames(myotu)
-  num_p <- apply(betahat,1,function(x) sum(x>0))
-  num_n <- apply(betahat, 1, function(x) sum(x<0))
-  df <- data.frame(row.names = rownames(myotu), positive=num_p, negative=num_n)
-  selected <- which(result$gammaresult>niter/2)
-
-  otu_ann <- row.names(myotu[selected,])
-  otu_color <- df[rownames(df) %in% otu_ann,]
-  otu_color$color <- ifelse(otu_color$positive/niter>0.5, "red", "blue")
-  otu_all <- row.names(myotu)
+  # ## calculate the negative counts for beta
+  # betahat <- result$betahat[,nburnin:(nburnin+niter)]
+  # rownames(betahat) <- rownames(myotu)
+  # num_p <- apply(betahat,1,function(x) sum(x>0))
+  # num_n <- apply(betahat, 1, function(x) sum(x<0))
+  # df <- data.frame(row.names = rownames(myotu), positive=num_p, negative=num_n)
+  # selected <- which(result$gammaresult>niter/2)
+  #
+  # otu_ann <- row.names(myotu[selected,])
+  # otu_color <- df[rownames(df) %in% otu_ann,]
+  # otu_color$color <- ifelse(otu_color$positive/niter>0.5, "red", "blue")
+  # otu_all <- row.names(myotu)
+  ## create a data frame with color
+  effect_size <- effect_size(result, ps, nburnin, niter, mode=mode,level=level)
+  merged_df <- merge(effect_size, mytax,by=level,all.x = TRUE)
+  merged_df$color <- ifelse(merged_df$effect_size > 0, "red", "blue")
 
   # Define the correctly formatted taxonomic rank names
   correct_format_ranks <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
@@ -162,51 +166,85 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   }
   print(paste("Total skips:", skip_count))
   ##write annotation for selected otu
-  for (otu in rownames(otu_color)) {
-    species <- as.character(mytax[otu,]$Species)
-    class <- as.character(mytax[otu,]$Class)
-    order <- as.character(mytax[otu,]$Order)
-    family <- as.character(mytax[otu,]$Family)
-    kingdom <- as.character(mytax[otu,]$Kingdom)
-    # print(species)
-    phylum <- as.character(mytax[otu,]$Phylum)
-    level_tax <- as.character(mytax[otu,colnames(mytax)==level])
-    genus <- as.character(mytax[otu,]$Genus)
-    if (species == "unknown" | class == "unknown" | order == "unknown" | family == "unknown" |
-        kingdom == "unknown" | phylum == "unknown" | genus == "unknown" | level_tax == "unknown") {
+  # for (otu in rownames(otu_color)) {
+  #   species <- as.character(mytax[otu,]$Species)
+  #   class <- as.character(mytax[otu,]$Class)
+  #   order <- as.character(mytax[otu,]$Order)
+  #   family <- as.character(mytax[otu,]$Family)
+  #   kingdom <- as.character(mytax[otu,]$Kingdom)
+  #   # print(species)
+  #   phylum <- as.character(mytax[otu,]$Phylum)
+  #   level_tax <- as.character(mytax[otu,colnames(mytax)==level])
+  #   genus <- as.character(mytax[otu,]$Genus)
+  #   if (species == "unknown" | class == "unknown" | order == "unknown" | family == "unknown" |
+  #       kingdom == "unknown" | phylum == "unknown" | genus == "unknown" | level_tax == "unknown") {
+  #     next
+  #   }
+  #   color1 <- otu_color$color[rownames(otu_color)==otu]
+  #   # print(otu)
+  #   size <- ifelse(!is.na(level_abundance$size[level_abundance$expected_level == level_tax]),
+  #                  level_abundance$size[level_abundance$expected_level == level_tax],
+  #                  50)
+  #   # phylum <- as.character(mytax[otu,]$Phylum)
+  #   # family <- as.character(mytax[otu,]$Family)
+  #
+  #   first_letter_genus <- toupper(substr(genus, 1, 1))
+  #   first_letter_class <- toupper(substr(genus,1,1))
+  #   first_letter_phylum <- toupper(substr(phylum,1,1))
+  #   writeLines(paste(family,"clade_marker_shape","^", sep = "\t"), file_conn)
+  #   writeLines(paste(family,"clade_marker_size","300", sep = "\t"), file_conn)
+  #   writeLines(paste(family,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
+  #   writeLines(paste(genus, "clade_marker_shape","^", sep="\t"), file_conn)
+  #   writeLines(paste(genus, "annotation_background_color", "red", sep = "\t"), file_conn)
+  #   writeLines(paste(class, "annotation_background_color", "red", sep = "\t"), file_conn)
+  #   writeLines(paste(genus, "clade_marker_size", "300", sep = "\t"), file_conn)
+  #   writeLines(paste(genus,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
+  #   # writeLines(paste(genus, "annotation", paste("Genus_",first_letter_genus,":",genus),sep = "\t"), file_conn)
+  #   writeLines(paste(class, "clade_marker_shape", "^", sep = "\t"), file_conn)
+  #   # writeLines(paste(class, "annotation_background_color", "red", sep = "\t"), file_conn)
+  #   writeLines(paste(class, "clade_marker_size", "300", sep = "\t"), file_conn)
+  #   writeLines(paste(class,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
+  #   writeLines(paste(phylum, "clade_marker_shape","^", sep = "\t"), file_conn)
+  #   # writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
+  #   writeLines(paste(phylum, "clade_marker_size", "300", sep = "\t"), file_conn)
+  #   writeLines(paste(phylum,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
+  #   writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
+  #   writeLines(paste(phylum,"annotation",paste("Phylum_",first_letter_phylum,":",phylum), sep = "\t"), file_conn)
+  #
+  # }
+  for (i in 1:nrow(merged_df)) {
+    # Extract taxonomic information for the current OTU
+    otu <- merged_df$level[i]
+    species <- merged_df$Species[i]
+    class <- merged_df$Class[i]
+    order <- merged_df$Order[i]
+    family <- merged_df$Family[i]
+    kingdom <- merged_df$Kingdom[i]
+    phylum <- merged_df$Phylum[i]
+    genus <- merged_df$Genus[i]
+    effect_size <- merged_df$effect_size[i]
+
+    # Skip if any taxonomic level is "unknown"
+    if ("unknown" %in% c(species, class, order, family, kingdom, phylum, genus)) {
       next
     }
-    color1 <- otu_color$color[rownames(otu_color)==otu]
-    # print(otu)
-    size <- ifelse(!is.na(level_abundance$size[level_abundance$expected_level == level_tax]),
-                   level_abundance$size[level_abundance$expected_level == level_tax],
-                   50)
-    # phylum <- as.character(mytax[otu,]$Phylum)
-    # family <- as.character(mytax[otu,]$Family)
 
-    first_letter_genus <- toupper(substr(genus, 1, 1))
-    first_letter_class <- toupper(substr(genus,1,1))
+    # Determine the color based on effect size
+    color <- ifelse(effect_size > 0, "red", "blue")
+
+    ## write annotation
     first_letter_phylum <- toupper(substr(phylum,1,1))
-    writeLines(paste(family,"clade_marker_shape","^", sep = "\t"), file_conn)
-    writeLines(paste(family,"clade_marker_size","300", sep = "\t"), file_conn)
-    writeLines(paste(family,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
-    writeLines(paste(genus, "clade_marker_shape","^", sep="\t"), file_conn)
-    writeLines(paste(genus, "annotation_background_color", "red", sep = "\t"), file_conn)
-    writeLines(paste(class, "annotation_background_color", "red", sep = "\t"), file_conn)
-    writeLines(paste(genus, "clade_marker_size", "300", sep = "\t"), file_conn)
-    writeLines(paste(genus,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
+    writeLines(paste(otu, "clade_marker_shape","^", sep="\t"), file_conn)
+    writeLines(paste(otu, "annotation_background_color", "yellow", sep = "\t"), file_conn)
+    writeLines(paste(otu, "clade_marker_size", "300", sep = "\t"), file_conn)
+    writeLines(paste(otu,"clade_marker_color", color, sep = "\t"), file_conn)
     # writeLines(paste(genus, "annotation", paste("Genus_",first_letter_genus,":",genus),sep = "\t"), file_conn)
-    writeLines(paste(class, "clade_marker_shape", "^", sep = "\t"), file_conn)
-    # writeLines(paste(class, "annotation_background_color", "red", sep = "\t"), file_conn)
-    writeLines(paste(class, "clade_marker_size", "300", sep = "\t"), file_conn)
-    writeLines(paste(class,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
     writeLines(paste(phylum, "clade_marker_shape","^", sep = "\t"), file_conn)
     # writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
     writeLines(paste(phylum, "clade_marker_size", "300", sep = "\t"), file_conn)
     writeLines(paste(phylum,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
     writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
     writeLines(paste(phylum,"annotation",paste("Phylum_",first_letter_phylum,":",phylum), sep = "\t"), file_conn)
-
   }
   close(file_conn)
 }
