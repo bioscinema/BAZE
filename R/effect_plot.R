@@ -30,7 +30,7 @@ effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
   effect_size_df <- effect_size(result, ps, nburnin, niter, mode=mode,level=level)
 
   ##add a sign column
-  effect_size_df$Sign <- ifelse(effect_size$effect_size > 0, "Positive", "Negative")
+  effect_size_df$Sign <- ifelse(effect_size_df$effect_size > 0, "Positive", "Negative")
 
 
   ##generate effect size plot
