@@ -31,10 +31,11 @@ effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
 
   ##add a sign column
   effect_size_df$Sign <- ifelse(effect_size_df$effect_size > 0, "Positive", "Negative")
+  # print(effect_size_df[[level]])
 
 
   ##generate effect size plot
-  p <- ggplot(effect_size_df, aes(x = reorder(level, effect_size), y = effect_size, fill=Sign)) +
+  p <- ggplot(effect_size_df, aes(x = reorder(effect_size_df[[level]], effect_size_df$effect_size), y = effect_size, fill=Sign)) +
     geom_col(color="black", width = 0.7) +  # Using geom_col which is geom_bar(stat = "identity")
     coord_flip() +  # Flip coordinates for horizontal bars
     # scale_fill_manual(values = c("Negative" = "red", "Positive" = "blue"),
