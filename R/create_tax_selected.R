@@ -55,7 +55,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   # otu_ann <- row.names(myotu[selected,])
   # otu_color <- df[rownames(df) %in% otu_ann,]
   # otu_color$color <- ifelse(otu_color$positive/niter>0.5, "red", "blue")
-  # otu_all <- row.names(myotu)
+  otu_all <- row.names(myotu)
   ## create a data frame with color
   effect_size <- effect_size(result, ps, nburnin, niter, mode="mean",level=level)
   merged_df <- merge(effect_size, mytax,by=level,all.x = TRUE)
