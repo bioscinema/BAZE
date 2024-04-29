@@ -53,7 +53,7 @@ effect_size <- function(result, ps, nburnin,niter, mode="mean",level="Genus"){
   }
   
   ##generate effect size data frame and order it
-  effect_size <- data.frame(taxa=betahat_s$taxa,effect_size=betahat_s$effect)
+  effect_size <- data.frame(level=betahat_s$taxa,effect_size=betahat_s$effect)
   effect_size <- effect_size[order(effect_size$effect_size,decreasing = TRUE),]
   
   ##return the result

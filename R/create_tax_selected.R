@@ -35,8 +35,15 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   }else{
     ps <- tax_glom(ps,taxrank = level)
   }
+
   mytax <- as.data.frame(tax_table(ps))
   myotu <- as.data.frame(otu_table(ps))
+
+  if (length(result$gammaresult)==nrow(myotu)){
+    print("Your result and phyloseq subject are at the same level, continue to generate annotation file.")
+  } else {
+    stop("Please check your result and level, make sure they are at the same level.")
+  }
   ## calculate the negative counts for beta
   betahat <- result$betahat[,nburnin:(nburnin+niter)]
   rownames(betahat) <- rownames(myotu)

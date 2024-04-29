@@ -34,7 +34,7 @@ effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
 
 
   ##generate effect size plot
-  p <- ggplot(effect_size, aes(x = reorder(taxa, effect_size), y = effect_size, fill=Sign)) +
+  p <- ggplot(effect_size, aes(x = reorder(level, effect_size), y = effect_size, fill=Sign)) +
     geom_col(color="black", width = 0.7) +  # Using geom_col which is geom_bar(stat = "identity")
     coord_flip() +  # Flip coordinates for horizontal bars
     # scale_fill_manual(values = c("Negative" = "red", "Positive" = "blue"),
