@@ -27,14 +27,14 @@
 #' @export
 effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
   ##calculate effect size
-  effect_size <- effect_size(result, ps, nburnin, niter, mode=mode,level=level)
+  effect_size_df <- effect_size(result, ps, nburnin, niter, mode=mode,level=level)
 
   ##add a sign column
-  effect_size$Sign <- ifelse(effect_size$effect_size > 0, "Positive", "Negative")
+  effect_size_df$Sign <- ifelse(effect_size$effect_size > 0, "Positive", "Negative")
 
 
   ##generate effect size plot
-  p <- ggplot(effect_size, aes(x = reorder(level, effect_size), y = effect_size, fill=Sign)) +
+  p <- ggplot(effect_size_df, aes(x = reorder(level, effect_size), y = effect_size, fill=Sign)) +
     geom_col(color="black", width = 0.7) +  # Using geom_col which is geom_bar(stat = "identity")
     coord_flip() +  # Flip coordinates for horizontal bars
     # scale_fill_manual(values = c("Negative" = "red", "Positive" = "blue"),

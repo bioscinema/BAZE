@@ -37,6 +37,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   }
 
   mytax <- as.data.frame(tax_table(ps))
+  mytax[is.na(mytax)] <- "-"
   myotu <- as.data.frame(otu_table(ps))
 
   if (length(result$gammaresult)==nrow(myotu)){
@@ -59,8 +60,9 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   ## create a data frame with color
   effect_size <- effect_size(result, ps, nburnin, niter, mode="mean",level=level)
   merged_df <- merge(effect_size, mytax,by=level,all.x = TRUE)
-  print(merged_df)
+  # print(merged_df)
   merged_df$color <- ifelse(merged_df$effect_size > 0, "red", "blue")
+  merged_df[is.na(merged_df)]<-"-"
 
   # Define the correctly formatted taxonomic rank names
   correct_format_ranks <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
@@ -218,7 +220,8 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   # }
   for (i in 1:nrow(merged_df)) {
     # Extract taxonomic information for the current OTU
-    otu <- merged_df$level[i]
+    otu <- merged_df[[level]][i]
+    print(otu)
     species <- merged_df$Species[i]
     class <- merged_df$Class[i]
     order <- merged_df$Order[i]
@@ -229,7 +232,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     effect_size <- merged_df$effect_size[i]
 
     # Skip if any taxonomic level is "unknown"
-    if (any(is.na(c(species, class, order, family, kingdom, phylum, genus)),
+    if (any(
             species == "unknown", class == "unknown",
             order == "unknown", family == "unknown",
             kingdom == "unknown", phylum == "unknown",
@@ -239,6 +242,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
 
     # Determine the color based on effect size
     color <- ifelse(effect_size > 0, "red", "blue")
+    print(color)
 
     ## write annotation
     first_letter_phylum <- toupper(substr(phylum,1,1))
