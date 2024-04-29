@@ -59,6 +59,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   ## create a data frame with color
   effect_size <- effect_size(result, ps, nburnin, niter, mode="mean",level=level)
   merged_df <- merge(effect_size, mytax,by=level,all.x = TRUE)
+  print(merged_df)
   merged_df$color <- ifelse(merged_df$effect_size > 0, "red", "blue")
 
   # Define the correctly formatted taxonomic rank names
@@ -119,8 +120,11 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     phylum <- as.character(mytax[otu,]$Phylum)
     genus <- as.character(mytax[otu,]$Genus)
 
-    if (species == "unknown" | class == "unknown" | order == "unknown" | family == "unknown" |
-        kingdom == "unknown" | phylum == "unknown" | genus == "unknown" | level_tax == "unknown") {
+    if (any(is.na(c(species, class, order, family, kingdom, phylum, genus)),
+            species == "unknown", class == "unknown",
+            order == "unknown", family == "unknown",
+            kingdom == "unknown", phylum == "unknown",
+            genus == "unknown")) {
       skip_count <- skip_count+1
       next
     }
@@ -164,7 +168,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     writeLines(paste(genus, "annotation_rotation","90", sep = "\t"), file_conn)
     writeLines(paste(genus,"clade_marker_color", "white", sep = "\t"), file_conn)
   }
-  print(paste("Total skips:", skip_count))
+  # print(paste("Total skips:", skip_count))
   ##write annotation for selected otu
   # for (otu in rownames(otu_color)) {
   #   species <- as.character(mytax[otu,]$Species)
@@ -225,7 +229,11 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     effect_size <- merged_df$effect_size[i]
 
     # Skip if any taxonomic level is "unknown"
-    if ("unknown" %in% c(species, class, order, family, kingdom, phylum, genus)) {
+    if (any(is.na(c(species, class, order, family, kingdom, phylum, genus)),
+            species == "unknown", class == "unknown",
+            order == "unknown", family == "unknown",
+            kingdom == "unknown", phylum == "unknown",
+            genus == "unknown")) {
       next
     }
 

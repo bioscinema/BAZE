@@ -194,7 +194,7 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
           # print(dim(stand$muy + Sy * X_test[, index] %*% tembeta))
           # print(dim(Yhat[,i+1]))
           Yhat[, i + 1] <- stand$muy + Sy * X_test[, index] %*% tembeta
-          MSE[i + 1] <- 1 / (n * t(Yobs_test - Yhat[, i + 1]) %*% (Yobs_test - Yhat[, i + 1])*(1-split_rate))
+          MSE[i + 1] <- 1 / (n*(1-split_rate)) * t(Yobs_test - Yhat[, i + 1]) %*% (Yobs_test - Yhat[, i + 1])
           nselect[i + 1] <- tn - 1
         }
 
@@ -250,7 +250,7 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
           tembeta <- invAri %*% t(X_train[, index]) %*% Y_train
           betahat[index, i + 1] <- Sy * invSx[index, index] %*% tembeta
           Yhat[, i + 1] <- stand$muy + Sy * X_test[, index] %*% tembeta
-          MSE[i + 1] <- 1 / (n * t(Yobs_test - Yhat[, i + 1]) %*% (Yobs_test - Yhat[, i + 1])*(1-split_rate))
+          MSE[i + 1] <- 1 / (n*(1-split_rate)) * t(Yobs_test - Yhat[, i + 1]) %*% (Yobs_test - Yhat[, i + 1])
           nselect[i + 1] <- tn
         }
       }else {
