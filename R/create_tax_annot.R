@@ -39,6 +39,7 @@ create_tax_annot <- function(ps, annotation_file, level="Genus"){
   ## Extract otu table and taxonomy table
   myotu <- as.data.frame(otu_table(ps))
   mytax <- as.data.frame(tax_table(ps))
+  mytax[] <- lapply(mytax, function(col) gsub("\\.", "_", col))
   otu_all <- row.names(myotu)
   expected_ranks <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
   actual_ranks <- colnames(mytax)
