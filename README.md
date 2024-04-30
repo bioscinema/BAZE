@@ -58,7 +58,7 @@ p
 create_tax_selected(ps,nburnin = 10000,niter = 5000,result = result,annotation_file = "test_select.txt")
 ```
 
-![hiv_s](https://github.com/bioscinema/BAZE/assets/90227639/19be479f-8986-49af-9e97-cf4c3a420967)
+![hiv_s (1)](https://github.com/bioscinema/BAZE/assets/90227639/828d7121-bbcf-46a3-89be-e6e70697344d)
 
 
 
