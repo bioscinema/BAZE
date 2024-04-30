@@ -36,13 +36,18 @@ create_tax <- function(ps, tree_file) {
   mytax <- as.data.frame(tax_table(ps))
 
   # Remove periods from taxonomic names
-  mytax[] <- lapply(mytax, function(col) gsub("\\.", "_", col))
+  mytax[] <- lapply(mytax, function(col) gsub("\\.", "", col))
 
   # Create taxonomic paths by concatenating taxonomic levels, omitting "unknown" and NAs
   tax_paths <- apply(mytax, 1, function(row) {
-    valid_taxa <- row[!tolower(row) %in% c("unknown", NA)]
-    paste(valid_taxa, collapse = ".")
+    # Convert all entries to lower case and remove undesired taxa
+    # Filter out 'unknown', 'uncultured', and variations like 'uncultured_xxx'
+    valid_taxa <- row[!grepl("^unknown$|^uncultured", tolower(row), perl = TRUE) & !is.na(row)]
+
+    # Concatenate the remaining taxonomic information into a single string
+    paste(na.omit(valid_taxa), collapse = ".")
   })
+
 
   # Write the taxonomic paths to the specified file
   writeLines(tax_paths, con = tree_file)

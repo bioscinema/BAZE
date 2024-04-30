@@ -124,12 +124,16 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     phylum <- as.character(mytax[otu,]$Phylum)
     genus <- as.character(mytax[otu,]$Genus)
 
-    if (any(is.na(c(species, class, order, family, kingdom, phylum, genus)),
-            species == "unknown", class == "unknown",
-            order == "unknown", family == "unknown",
-            kingdom == "unknown", phylum == "unknown",
-            genus == "unknown")) {
-      skip_count <- skip_count+1
+    if (species == "unknown" | class == "unknown" | order == "unknown" | family == "unknown" |
+        kingdom == "unknown" | phylum == "unknown" | genus == "unknown" | level_tax == "unknown" |
+        grepl("^uncultured", species, ignore.case = TRUE) |
+        grepl("^uncultured", class, ignore.case = TRUE) |
+        grepl("^uncultured", order, ignore.case = TRUE) |
+        grepl("^uncultured", family, ignore.case = TRUE) |
+        grepl("^uncultured", kingdom, ignore.case = TRUE) |
+        grepl("^uncultured", phylum, ignore.case = TRUE) |
+        grepl("^uncultured", genus, ignore.case = TRUE) |
+        grepl("^uncultured", level_tax, ignore.case = TRUE)) {
       next
     }
 
@@ -223,7 +227,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   for (i in 1:nrow(merged_df)) {
     # Extract taxonomic information for the current OTU
     otu <- merged_df[[level]][i]
-    print(otu)
+    # print(otu)
     species <- merged_df$Species[i]
     class <- merged_df$Class[i]
     order <- merged_df$Order[i]
@@ -234,17 +238,22 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     effect_size <- merged_df$effect_size[i]
 
     # Skip if any taxonomic level is "unknown"
-    if (any(
-            species == "unknown", class == "unknown",
-            order == "unknown", family == "unknown",
-            kingdom == "unknown", phylum == "unknown",
-            genus == "unknown")) {
+    if (species == "unknown" | class == "unknown" | order == "unknown" | family == "unknown" |
+        kingdom == "unknown" | phylum == "unknown" | genus == "unknown" | level_tax == "unknown" |
+        grepl("^uncultured", species, ignore.case = TRUE) |
+        grepl("^uncultured", class, ignore.case = TRUE) |
+        grepl("^uncultured", order, ignore.case = TRUE) |
+        grepl("^uncultured", family, ignore.case = TRUE) |
+        grepl("^uncultured", kingdom, ignore.case = TRUE) |
+        grepl("^uncultured", phylum, ignore.case = TRUE) |
+        grepl("^uncultured", genus, ignore.case = TRUE) |
+        grepl("^uncultured", level_tax, ignore.case = TRUE)) {
       next
     }
 
     # Determine the color based on effect size
     color <- ifelse(effect_size > 0, "red", "blue")
-    print(color)
+    # print(color)
 
     ## write annotation
     first_letter_phylum <- toupper(substr(phylum,1,1))

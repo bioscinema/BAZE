@@ -39,7 +39,7 @@ create_tax_annot <- function(ps, annotation_file, level="Genus"){
   ## Extract otu table and taxonomy table
   myotu <- as.data.frame(otu_table(ps))
   mytax <- as.data.frame(tax_table(ps))
-  mytax[] <- lapply(mytax, function(col) gsub("\\.", "_", col))
+  mytax[] <- lapply(mytax, function(col) gsub("\\.", "", col))
   otu_all <- row.names(myotu)
   expected_ranks <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
   actual_ranks <- colnames(mytax)
@@ -82,9 +82,18 @@ create_tax_annot <- function(ps, annotation_file, level="Genus"){
     first_letter_class <- toupper(substr(Class, 1, 1))
     first_letter_phylum <- toupper(substr(Phylum,1,1))
     if (Species == "unknown" | Class == "unknown" | Order == "unknown" | Family == "unknown" |
-        Kingdom == "unknown" | Phylum == "unknown" | Genus == "unknown" | level_tax == "unknown") {
+        Kingdom == "unknown" | Phylum == "unknown" | Genus == "unknown" | level_tax == "unknown" |
+        grepl("^uncultured", Species, ignore.case = TRUE) |
+        grepl("^uncultured", Class, ignore.case = TRUE) |
+        grepl("^uncultured", Order, ignore.case = TRUE) |
+        grepl("^uncultured", Family, ignore.case = TRUE) |
+        grepl("^uncultured", Kingdom, ignore.case = TRUE) |
+        grepl("^uncultured", Phylum, ignore.case = TRUE) |
+        grepl("^uncultured", Genus, ignore.case = TRUE) |
+        grepl("^uncultured", level_tax, ignore.case = TRUE)) {
       next
     }
+
 
     color <- color_list$phylum_colors[color_list$unique_phyla==Phylum]
     size <- ifelse(!is.na(level_abundance$size[level_abundance$expected_level == level_tax]),
