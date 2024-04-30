@@ -37,8 +37,10 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
   }
 
   mytax <- as.data.frame(tax_table(ps))
+  mytax[] <- lapply(mytax, function(col) gsub("\\.", "_", col))
   mytax[is.na(mytax)] <- "-"
   myotu <- as.data.frame(otu_table(ps))
+
 
   if (length(result$gammaresult)==nrow(myotu)){
     print("Your result and phyloseq subject are at the same level, continue to generate annotation file.")

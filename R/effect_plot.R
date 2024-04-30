@@ -43,7 +43,8 @@ effect_plot <- function(result, ps, nburnin, niter, mode="mean",level="Genus"){
     #                   labels = c("Negative", "Positive")) +
     labs(x = "Taxa", y = "Effect Size", title = "Effect Size Plot") +
     theme_minimal() +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom",
+          axis.text = element_text(size = 15))
 
   ##return plot
   return(p)
