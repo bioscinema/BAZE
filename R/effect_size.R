@@ -35,28 +35,29 @@ effect_size <- function(result, ps, nburnin,niter, mode="mean",level="Genus"){
   if (nrow(result$betahat) != nrow(mytax)) {
     stop("please re-enter level to keep your result and phyloseq subject align")
   }
-  
+
   ## extract betahat and frequencies from result
   betahat <- result$betahat
   gammaresult <- result$gammaresult
-  
+
   ##combine taxa name with selection result
   gamma <- data.frame(taxa = mytax[[level]], result = gammaresult)
   result <- cbind(gamma,betahat)
   betahat_s <- result[which(result$result>niter/2),]
-  
+
   ##calculate effect size
   if (mode == "mean") {
     betahat_s$effect = rowMeans(betahat_s[,(nburnin+3):ncol(betahat_s)])
   } else if(mode=="median"){
     betahat_s$effect <- apply(betahat_s[,(nburnin+3):ncol(betahat_s)], 1, median)
   }
-  
+
   ##generate effect size data frame and order it
   effect_size <- data.frame(taxa=betahat_s$taxa,effect_size=betahat_s$effect)
   names(effect_size) <- c(level, "effect_size")
+  effect_size <- effect_size[-effect_size[[level]] %in% c("unknown","uncultured"),]
   effect_size <- effect_size[order(effect_size$effect_size,decreasing = TRUE),]
-  
+
   ##return the result
   return(effect_size)
 }
