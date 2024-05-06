@@ -262,7 +262,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     writeLines(paste(otu, "annotation_background_color", color, sep = "\t"), file_conn)
     writeLines(paste(otu, "clade_marker_size", "300", sep = "\t"), file_conn)
     writeLines(paste(otu,"clade_marker_color", color, sep = "\t"), file_conn)
-    writeLines(paste(otu,"annotation_rotation", "180", sep = "\t"), file_conn)
+    writeLines(paste(otu,"annotation_rotation", "270", sep = "\t"), file_conn)
     # writeLines(paste(genus, "annotation", paste("Genus_",first_letter_genus,":",genus),sep = "\t"), file_conn)
     # writeLines(paste(family, "clade_marker_shape","^", sep = "\t"), file_conn)
     # # writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
@@ -270,7 +270,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     # writeLines(paste(family,"clade_marker_color", "green", sep = "\t"), file_conn)
     writeLines(paste(otu, "annotation_background_color", color, sep = "\t"), file_conn)
     writeLines(paste(otu,"annotation",otu, sep = "\t"), file_conn)
-    writeLines(paste(otu,"annotation_font_size", "180", sep = "\t"), file_conn)
+    writeLines(paste(otu,"annotation_font_size", "18", sep = "\t"), file_conn)
   }
   close(file_conn)
 }
