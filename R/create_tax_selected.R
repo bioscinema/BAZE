@@ -160,9 +160,9 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     writeLines(paste(family,"clade_marker_size", "0", sep = "\t"), file_conn)
     # writeLines(paste(genus,"clade_marker_size", "0", sep = "\t"), file_conn)
     writeLines(paste(class,"clade_marker_size", "0", sep = "\t"), file_conn)
-    writeLines(paste(genus, "ring_height", "1", size/10000, sep = "\t"), file_conn)
+    # writeLines(paste(genus, "ring_height", "1", size/10000, sep = "\t"), file_conn)
 
-    writeLines(paste(genus,"ring_color", "1","purple", sep = "\t"), file_conn)
+    # writeLines(paste(genus,"ring_color", "1","purple", sep = "\t"), file_conn)
     writeLines(paste(genus,"clade_marker_color", "white", sep = "\t"), file_conn)
 
     writeLines(paste(phylum,"clade_marker_color","white", sep = "\t"), file_conn)
@@ -250,24 +250,27 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
         grepl("^uncultured", level_tax, ignore.case = TRUE)) {
       next
     }
-
+    # if (otu=="DTU014"){next}
     # Determine the color based on effect size
     color <- ifelse(effect_size > 0, "red", "blue")
     # print(color)
 
     ## write annotation
     first_letter_phylum <- toupper(substr(phylum,1,1))
-    writeLines(paste(otu, "clade_marker_shape","^", sep="\t"), file_conn)
-    writeLines(paste(otu, "annotation_background_color", "yellow", sep = "\t"), file_conn)
+
+    # writeLines(paste(otu, "clade_marker_shape","^", sep="\t"), file_conn)
+    writeLines(paste(otu, "annotation_background_color", color, sep = "\t"), file_conn)
     writeLines(paste(otu, "clade_marker_size", "300", sep = "\t"), file_conn)
     writeLines(paste(otu,"clade_marker_color", color, sep = "\t"), file_conn)
+    writeLines(paste(otu,"annotation_rotation", "180", sep = "\t"), file_conn)
     # writeLines(paste(genus, "annotation", paste("Genus_",first_letter_genus,":",genus),sep = "\t"), file_conn)
-    writeLines(paste(phylum, "clade_marker_shape","^", sep = "\t"), file_conn)
-    # writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
-    writeLines(paste(phylum, "clade_marker_size", "300", sep = "\t"), file_conn)
-    writeLines(paste(phylum,"clade_marker_color", "darkgreen", sep = "\t"), file_conn)
-    writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
-    writeLines(paste(phylum,"annotation",paste("Phylum_",first_letter_phylum,":",phylum), sep = "\t"), file_conn)
+    # writeLines(paste(family, "clade_marker_shape","^", sep = "\t"), file_conn)
+    # # writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
+    # writeLines(paste(family, "clade_marker_size", "300", sep = "\t"), file_conn)
+    # writeLines(paste(family,"clade_marker_color", "green", sep = "\t"), file_conn)
+    writeLines(paste(otu, "annotation_background_color", color, sep = "\t"), file_conn)
+    writeLines(paste(otu,"annotation",otu, sep = "\t"), file_conn)
+    writeLines(paste(otu,"annotation_font_size", "180", sep = "\t"), file_conn)
   }
   close(file_conn)
 }
