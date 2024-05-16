@@ -250,7 +250,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
         grepl("^uncultured", level_tax, ignore.case = TRUE)) {
       next
     }
-    # if (otu=="DTU014"){next}
+    if (otu=="Selenomonadales_unclassified"){next}
     # Determine the color based on effect size
     color <- ifelse(effect_size > 0, "red", "blue")
     # print(color)
