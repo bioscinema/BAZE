@@ -6,7 +6,6 @@
 #' @param ps A phyloseq object containing the microbiome data.
 #' @param nburnin An integer specifying the number of burn-in iterations.
 #' @param niter An integer specifying the total number of iterations.
-#' @param mode A character string specifying the mode of calculation (currently unused, reserved for future use). Default is "mean".
 #' @param level A character string specifying the taxonomic level at which to aggregate the data (e.g., "Genus"). If NULL, no aggregation is performed.
 #' @return A data frame containing taxa names and their corresponding effect significance ("positive" or "negative").
 #' @details
@@ -16,7 +15,7 @@
 #' # effect_sign(result, ps, nburnin=100, niter=1000, level="Genus")
 #' @importFrom stats na.omit
 #' @export
-effect_sign <- function(result, ps, nburnin, niter, mode = "mean", level = "Genus") {
+effect_sign <- function(result, ps, nburnin, niter, level = "Genus") {
   # Aggregate taxa to the specified taxonomic level if provided
   if (is.null(level)) {
     ps1 <- ps
