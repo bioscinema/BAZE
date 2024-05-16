@@ -46,8 +46,8 @@ effect_sign <- function(result, ps, nburnin, niter, level = "Genus") {
   
   # Generate effect size data frame and filter out unwanted taxa
   effect_sign <- data.frame(taxa = betahat_s$taxa, effect_sign = betahat_s$sign)
-  # names(effect_sign) <- c("taxa", "effect_sign")
-  effect_sign <- effect_sign[!effect_sign[[level]] %in% c("unknown", "uncultured"), ]
+  names(effect_sign) <- c("taxa", "effect_sign")
+  effect_sign <- effect_sign[!effect_sign$taxa %in% c("unknown", "uncultured"), ]
   
   # Return the result
   return(effect_sign)
