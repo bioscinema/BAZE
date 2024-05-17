@@ -4,7 +4,7 @@
 \alias{effect_sign}
 \title{Generate Effect Significance for Taxonomic Levels}
 \usage{
-effect_sign(result, ps, nburnin, niter, mode = "mean", level = "Genus")
+effect_sign(result, ps, nburnin, niter, level = "Genus")
 }
 \arguments{
 \item{result}{A list containing the \code{betahat} matrix and \code{gammaresult} vector from the model results.}
@@ -14,8 +14,6 @@ effect_sign(result, ps, nburnin, niter, mode = "mean", level = "Genus")
 \item{nburnin}{An integer specifying the number of burn-in iterations.}
 
 \item{niter}{An integer specifying the total number of iterations.}
-
-\item{mode}{A character string specifying the mode of calculation (currently unused, reserved for future use). Default is "mean".}
 
 \item{level}{A character string specifying the taxonomic level at which to aggregate the data (e.g., "Genus"). If NULL, no aggregation is performed.}
 }
