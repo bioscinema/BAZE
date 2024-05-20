@@ -42,7 +42,10 @@ create_tax_merged <- function(merged_table, annotation_file) {
     otu <- merged_table$taxa[i]
     color <- merged_table$color[i]
     
-    if (otu == "unknown" || grepl("uncultured", otu, ignore.case = TRUE)) {
+    if (otu == "unknown" || 
+        grepl("uncultured", otu, ignore.case = TRUE) || 
+        grepl("unclassified", otu, ignore.case = TRUE) || 
+        grepl("unclass", otu, ignore.case = TRUE)) {
       next
     }
     writeLines(paste(otu, "clade_marker_size", "300", sep = "\t"), file_conn)
