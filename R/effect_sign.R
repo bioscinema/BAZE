@@ -1,6 +1,6 @@
 #' Generate Effect Significance for Taxonomic Levels
 #'
-#' This function computes the effect size and significance (positive or negative) for taxa at a specified taxonomic level based on the provided phyloseq object and model results.
+#' This function computes the effect size and significance (red or blue) for taxa at a specified taxonomic level based on the provided phyloseq object and model results.
 #'
 #' @param result A list containing the `betahat` matrix and `gammaresult` vector from the model results.
 #' @param ps A phyloseq object containing the microbiome data.
@@ -22,33 +22,33 @@ effect_sign <- function(result, ps, nburnin, niter, level = "Genus") {
   } else {
     ps1 <- tax_glom(ps, taxrank = level)
   }
-  
+
   # Extract taxonomy table and ensure alignment with result dimensions
   mytax <- as.data.frame(tax_table(ps1))
   if (nrow(result$betahat) != nrow(mytax)) {
     stop("Please re-enter level to keep your result and phyloseq subject aligned")
   }
-  
+
   # Extract betahat and gammaresult from result
   betahat <- result$betahat
   gammaresult <- result$gammaresult
-  
+
   # Combine taxa name with selection result
   gamma <- data.frame(taxa = mytax[[level]], result = gammaresult)
   combined_result <- cbind(gamma, betahat)
-  
+
   # Filter results based on gamma threshold
   betahat_s <- combined_result[combined_result$result > niter / 2, ]
-  
+
   # Calculate effect size
   effect <- rowMeans(betahat_s[, (nburnin + 3):ncol(betahat_s)])
-  betahat_s$sign <- ifelse(effect > 0, "positive", "negative")
-  
+  betahat_s$sign <- ifelse(effect > 0, "red", "blue")
+
   # Generate effect size data frame and filter out unwanted taxa
-  effect_sign <- data.frame(taxa = betahat_s$taxa, effect_sign = betahat_s$sign)
-  names(effect_sign) <- c("taxa", "effect_sign")
-  effect_sign <- effect_sign[!effect_sign$taxa %in% c("unknown", "uncultured"), ]
-  
+  effect_sign <- data.frame(node = betahat_s$taxa, color = betahat_s$sign)
+  names(effect_sign) <- c("node", "color")
+  effect_sign <- effect_sign[!effect_sign$node %in% c("unknown", "uncultured"), ]
+
   # Return the result
   return(effect_sign)
 }
