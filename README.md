@@ -17,22 +17,7 @@ devtools::install_github("bioscinema/BAZE")
 
 Here's a basic example of how to use the functions from the BAZE package:
 
-First, you can generate overall taxonomy tree files and view the data.
 ```r
-## Load package
-library(BAZE)
-
-## Generate annotation files for GraPhlAn
-### Generate taxonomy tree file (ps is your phyloseq subject)
-create_tax(ps,"test_tax.txt")
-
-### Generate overall annotation file
-create_tax_annot(ps,"test_annot.txt")
-```
-![test](https://github.com/bioscinema/BAZE/assets/90227639/d15e1c3e-b202-43e1-b782-ca70c9b8415e)
-```r
-
-
 ## Generate overall taxonomy tree plot at user-specified level based on ggtree package
 ### First, delete duplicate taxa
 ps1 <- fix_duplicate_tax(ps)
