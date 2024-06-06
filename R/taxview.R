@@ -44,6 +44,7 @@
 #' @import phyloseq
 #' @import ggtree
 #' @import scales
+#' 
 #' @export
 taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Phylum") {
   # Extract taxonomy table

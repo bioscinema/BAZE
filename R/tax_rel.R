@@ -23,7 +23,8 @@
 #'
 #' @return Returns a ggtree plot object with highlighted clades, labels, and relative abundance bars based on the specified taxonomic annotations.
 #'
-#' @importFrom ggtree ggtree geom_point geom_text2 geom_hilight geom_segment
+#' @importFrom ggtree ggtree geom_point geom_text2 geom_hilight
+#' @importFrom ggplot2 geom_segment 
 #' @importFrom dplyr filter arrange mutate
 #' @importFrom scales hue_pal
 #'
