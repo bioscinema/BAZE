@@ -21,7 +21,7 @@ effect_sign(result, ps, nburnin, niter, level = "Genus")
 A data frame containing taxa names and their corresponding effect significance ("positive" or "negative").
 }
 \description{
-This function computes the effect size and significance (positive or negative) for taxa at a specified taxonomic level based on the provided phyloseq object and model results.
+This function computes the effect size and significance (red or blue) for taxa at a specified taxonomic level based on the provided phyloseq object and model results.
 }
 \details{
 This function first aggregates the taxa in the phyloseq object to the specified taxonomic level (if provided). It then ensures the dimensions of the taxonomy table align with the dimensions of the \code{betahat} matrix from the model results. The function combines the taxa names with the selection results (\code{gammaresult}), filters taxa based on a threshold, calculates the effect size for each taxon, and determines the effect's significance (positive or negative). Finally, it returns a data frame with taxa names and their effect significance, excluding taxa labeled as "unknown" or "uncultured".

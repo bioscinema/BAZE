@@ -45,6 +45,8 @@ fix_duplicate_tax = function(physeq){
 #'
 #' @importFrom dplyr filter mutate select
 #' @importFrom treeio treedata
+#' @importFrom utils read.table
+#' 
 #'
 #' @examples
 #' \dontrun{
