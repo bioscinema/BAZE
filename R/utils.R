@@ -25,6 +25,44 @@ fix_duplicate_tax = function(physeq){
   return(physeq)
 }
 
+######################################################################
+##' @title summarize_taxa
+##'
+##' @param physeq a phyloseq object
+##' @param level the taxonomy level to summarize
+##' @importFrom magrittr "%>%"
+##' @importFrom reshape2 melt dcast
+##' @import dplyr
+##' @export
+##' @description Summarize a phyloseq object on different taxonomy level
+
+summarize_taxa = function(physeq, level, keep_full_tax = TRUE){
+  # do some checking here
+  if (!requireNamespace("phyloseq", quietly = TRUE)) {
+    stop("Package \"phyloseq\" needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+  
+  otutab = phyloseq::otu_table(physeq)
+  taxtab = phyloseq::tax_table(physeq)
+  
+  if(keep_full_tax){
+    taxonomy = apply(taxtab[,1:level], 1, function(x)
+      paste(c("r__Root", x), collapse="|"))
+  }else{
+    taxonomy = taxtab[,level]
+  }
+  
+  otutab %>%
+    as.data.frame %>%
+    mutate(taxonomy = taxonomy) %>%
+    melt(id.var = "taxonomy",
+         variable.name = "sample_id") %>%
+    group_by(taxonomy, sample_id) %>%
+    summarize(value=sum(value)) %>%
+    dcast(taxonomy~sample_id)
+}
+
 ################################################################################
 
 #' Create a Phylogenetic Tree from Taxonomy Profile
