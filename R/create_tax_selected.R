@@ -268,7 +268,7 @@ create_tax_selected <- function(ps, nburnin, niter, result, annotation_file, lev
     # # writeLines(paste(phylum, "annotation_background_color", "red", sep = "\t"), file_conn)
     # writeLines(paste(family, "clade_marker_size", "300", sep = "\t"), file_conn)
     # writeLines(paste(family,"clade_marker_color", "green", sep = "\t"), file_conn)
-    writeLines(paste(otu, "annotation_background_color", color, sep = "\t"), file_conn)
+    writeLines(paste(otu, "annotation_background_color", "white", sep = "\t"), file_conn)
     writeLines(paste(otu,"annotation",otu, sep = "\t"), file_conn)
     writeLines(paste(otu,"annotation_font_size", "18", sep = "\t"), file_conn)
   }
