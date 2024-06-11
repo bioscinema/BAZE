@@ -45,6 +45,7 @@ detailed_tax <- function(ps, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno
   gtree <- plottree(tr1,layout = layout)
   short.labs <- get_unique_id(length(unique(anno.data$node)))
   
+  
   get_offset <- function(x) { (x * 0.2 + 0.2)^2 }
   
   get_angle <- function(node) {
@@ -73,7 +74,7 @@ detailed_tax <- function(ps, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno
   }
   
   gtree$layers <- rev(gtree$layers)
-  
+  short.labs.anno <- NULL
   ## Add points and text labels to selected nodes with color
   for (i in 1:length(node_ids)) {
     n <- node_ids[i]
