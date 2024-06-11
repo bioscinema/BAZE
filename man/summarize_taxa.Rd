@@ -2,15 +2,28 @@
 % Please edit documentation in R/utils.R
 \name{summarize_taxa}
 \alias{summarize_taxa}
-\title{summarize_taxa}
+\title{Summarize Taxa}
 \usage{
 summarize_taxa(physeq, level, keep_full_tax = TRUE)
 }
 \arguments{
-\item{physeq}{a phyloseq object}
+\item{physeq}{A phyloseq object containing the microbiome data.}
 
-\item{level}{the taxonomy level to summarize}
+\item{level}{Integer. The taxonomic level at which to summarize the data.}
+
+\item{keep_full_tax}{Logical. Whether to keep the full taxonomic information (default is TRUE).}
+}
+\value{
+A data frame with summarized taxa.
 }
 \description{
-Summarize a phyloseq object on different taxonomy level
+This function summarizes the taxa in a phyloseq object at a specified taxonomic level.
+}
+\examples{
+\dontrun{
+physeq <- phyloseq_object  # Replace with actual phyloseq object
+summarized <- summarize_taxa(physeq, level = 2, keep_full_tax = TRUE)
+print(summarized)
+}
+
 }
