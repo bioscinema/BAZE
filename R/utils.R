@@ -26,41 +26,56 @@ fix_duplicate_tax = function(physeq){
 }
 
 ######################################################################
-##' @title summarize_taxa
-##'
-##' @param physeq a phyloseq object
-##' @param level the taxonomy level to summarize
-##' @importFrom magrittr "%>%"
-##' @importFrom reshape2 melt dcast
-##' @import dplyr
-##' @export
-##' @description Summarize a phyloseq object on different taxonomy level
-
-summarize_taxa = function(physeq, level, keep_full_tax = TRUE){
-  # do some checking here
+#' Summarize Taxa
+#'
+#' This function summarizes the taxa in a phyloseq object at a specified taxonomic level.
+#'
+#' @param physeq A phyloseq object containing the microbiome data.
+#' @param level Integer. The taxonomic level at which to summarize the data.
+#' @param keep_full_tax Logical. Whether to keep the full taxonomic information (default is TRUE).
+#' 
+#' @return A data frame with summarized taxa.
+#' 
+#' @examples
+#' \dontrun{
+#' physeq <- phyloseq_object  # Replace with actual phyloseq object
+#' summarized <- summarize_taxa(physeq, level = 2, keep_full_tax = TRUE)
+#' print(summarized)
+#' }
+#' 
+#' @importFrom magrittr "%>%"
+#' @importFrom reshape2 melt dcast
+#' @importFrom dplyr mutate group_by summarize
+#' @importFrom phyloseq otu_table tax_table
+#' @export
+summarize_taxa <- function(physeq, level, keep_full_tax = TRUE) {
+  # Ensure the required package is available
   if (!requireNamespace("phyloseq", quietly = TRUE)) {
     stop("Package \"phyloseq\" needed for this function to work. Please install it.",
          call. = FALSE)
   }
   
-  otutab = phyloseq::otu_table(physeq)
-  taxtab = phyloseq::tax_table(physeq)
+  # Extract the OTU table and taxonomy table from the phyloseq object
+  otutab <- phyloseq::otu_table(physeq)
+  taxtab <- phyloseq::tax_table(physeq)
   
-  if(keep_full_tax){
-    taxonomy = apply(taxtab[,1:level], 1, function(x)
-      paste(c("r__Root", x), collapse="|"))
-  }else{
-    taxonomy = taxtab[,level]
+  # Generate the taxonomy string based on the level and keep_full_tax parameter
+  if (keep_full_tax) {
+    taxonomy <- apply(taxtab[, 1:level], 1, function(x) paste(c("r__Root", x), collapse = "|"))
+  } else {
+    taxonomy <- taxtab[, level]
   }
   
-  otutab %>%
-    as.data.frame %>%
+  # Summarize the taxa
+  summarized_taxa <- otutab %>%
+    as.data.frame() %>%
     mutate(taxonomy = taxonomy) %>%
-    melt(id.var = "taxonomy",
-         variable.name = "sample_id") %>%
-    group_by(taxonomy, sample_id) %>%
-    summarize(value=sum(value)) %>%
-    dcast(taxonomy~sample_id)
+    reshape2::melt(id.var = "taxonomy", variable.name = "sample_id") %>%
+    dplyr::group_by(taxonomy, sample_id) %>%
+    dplyr::summarize(value = sum(value)) %>%
+    reshape2::dcast(taxonomy ~ sample_id)
+  
+  return(summarized_taxa)
 }
 
 ################################################################################
