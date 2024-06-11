@@ -18,7 +18,10 @@ Imports:
   randomcoloR,
   ggtree,
   scales,
-  treeio	
+  treeio,
+  magrittr,
+  reshape2,
+  tidytree	
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

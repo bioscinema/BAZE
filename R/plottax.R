@@ -45,7 +45,7 @@ plottax <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
       geom_point(aes(size=I(nodeSize)), shape=shape, fill=fill, color=color)
   }
   gtree <- plottree(tree)
-  short.labs <- letters
+  short.labs <- get_unique_id(length(unique(anno.data$node)))
   get_offset <- function(x) {(x*0.2+0.2)^2}
   get_angle <- function(node){
     data <- gtree$data
@@ -102,11 +102,11 @@ plottax <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     #                   fontsize=1.5+sqrt(nodeClass),
     #                   offset=offset, barsize=0, hjust=0.5)
     gtree <- gtree +
-      geom_text2(data = data.frame(node = n, label = lab, x = mapping$x, y = mapping$y), 
-                 aes(x = x, y = y, label = label), 
-                 size = 5 + sqrt(nodeClass), 
-                 angle = angle, 
-                 vjust = -0.5, 
+      geom_text2(data = data.frame(node = n, label = lab, x = mapping$x, y = mapping$y),
+                 aes(x = x, y = y, label = label),
+                 size = 5 + sqrt(nodeClass),
+                 angle = angle,
+                 vjust = -0.5,
                  hjust = 0.5)
   }
   if(is.null(short.labs.anno)){return(gtree)}

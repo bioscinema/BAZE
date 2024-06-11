@@ -280,3 +280,40 @@ phy_to_tax <- function(physeq,
                     node.size.scale = node.size.scale,
                     node.size.offset = node.size.offset)
 }
+
+
+##########################################################################
+#' Get Selected Taxonomic IDs
+#'
+#' This function filters the taxonomic table of a phyloseq object to retain only the taxa that match
+#' the specified nodes in the annotation data.
+#'
+#' @param ps A phyloseq object containing the microbiome data.
+#' @param anno.data A data frame containing annotation data with columns for nodes.
+#' 
+#' @return A vector of selected taxonomic IDs.
+#' 
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq_object  # Replace with actual phyloseq object
+#' anno.data <- data.frame(node = c("g__Bacteroides", "f__Lachnospiraceae"), color = c("red", "blue"))  # Replace with actual annotation data
+#' selected_ids <- get_selected_id(ps, anno.data)
+#' print(selected_ids)
+#' }
+#' 
+#' @importFrom dplyr mutate filter across
+#' @export
+get_selected_id <- function(ps, anno.data) {
+  tax_tab <- as.data.frame(tax_table(ps))
+  
+  # Add the appropriate prefixes to each taxonomic level
+  tax_tab_prefixed <- tax_tab %>%
+    mutate(across(everything(), ~ paste0(tolower(substr(cur_column(), 1, 1)), "__", .)))
+  
+  # Filter the tax table to keep only the selected features
+  filtered_tax_tab <- tax_tab_prefixed %>%
+    filter(apply(., 1, function(row) any(row %in% anno.data$node)))
+  
+  selected_id <- rownames(filtered_tax_tab)
+  return(selected_id)
+}
