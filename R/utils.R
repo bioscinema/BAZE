@@ -1,7 +1,7 @@
 ##' @title fix_duplicate_tax
 ##'
 ##' @param physeq a phyloseq object
-##' @author Chenghao Zhu, Chenhao Li, Guangchuang Yu
+
 ##' @export
 ##' @description fix the duplicatae taxonomy names of a phyloseq object
 
