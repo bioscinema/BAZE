@@ -42,7 +42,7 @@ detailed_tax <- function(ps, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno
   plottree <- function(tree, size=0.5, layout=layout, shape=21, fill='white', color='black') {
     ggtree(tree, size=size, layout=layout)
   }
-  gtree <- plottree(tr1)
+  gtree <- plottree(tr1,layout = layout)
   short.labs <- get_unique_id(length(unique(anno.data$node)))
   
   get_offset <- function(x) { (x * 0.2 + 0.2)^2 }
