@@ -80,6 +80,12 @@ p2
 ![hiv_select](https://github.com/bioscinema/BAZE/assets/90227639/cc52c178-d7d2-4a18-a798-aa892f7343b1)
 
 ```r
+## fix duplicate taxa
+ps1 <- fix_duplicate_tax(ps)
+
+##create treeio subject
+tr1 <- phy_to_tax(ps1)
+
 p2 <- plottax(tr1,anno.data = effect,anno.depth = 6)
 p2
 ```
