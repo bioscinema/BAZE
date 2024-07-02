@@ -86,6 +86,10 @@ ps1 <- fix_duplicate_tax(ps)
 ##create treeio subject
 tr1 <- phy_to_tax(ps1)
 
+##create annotation data frame
+effect <- data.frame(node=c("g__Streptococcus","g__Dialister"),color=c("green","blue"))
+
+##create annotated figure
 p2 <- plottax(tr1,anno.data = effect,anno.depth = 6)
 p2
 ```
