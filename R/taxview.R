@@ -44,38 +44,39 @@
 #' @import phyloseq
 #' @import ggtree
 #' @import scales
-#' 
+#' @import randomcoloR
+#'
 #' @export
 taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Phylum") {
   # Extract taxonomy table
   tax <- as.data.frame(ps@tax_table)
-  
+
   # Generate a color palette for the taxonomic levels
-  taxon_colors <- hue_pal()(length(unique(tax[[level]])))
+  taxon_colors <- distinctColorPalette(length(unique(tax[[level]])))
   names(taxon_colors) <- unique(tax[[level]])
-  
+
   # Create a mapping from tips to their taxonomy level
   tip_labels <- data.frame(label = rownames(tax), taxon = tax[[level]])
-  
+
   # Create the ggtree plot
   p <- ggtree(tree, size=branch_thickness, layout=layout)
-  
+
   # Highlight each taxon clade based on internal node labels and add clade labels
   for (taxon in unique(tip_labels$taxon)) {
     node_label <- paste0(tolower(substr(level, 1, 1)), "__", taxon)
     if (node_label %in% tree@phylo[["node.label"]]) {
       node_index <- which(tree@phylo[["node.label"]] == node_label) + length(tree@phylo[["tip.label"]])
       p <- p + geom_hilight(node = node_index, fill = taxon_colors[taxon], alpha = 0.3, show.legend = TRUE)
-      
+
       # Add clade labels outside the highlighted clades
       p <- p + geom_cladelabel(node = node_index, label = taxon,
                                fontsize = 3, offset = 1, barsize = 0, hjust = 0.5, angle = 0)
     }
   }
-  
+
   # Add a dummy dataframe to create the legend
   legend_df <- data.frame(taxon = names(taxon_colors), fill = taxon_colors)
-  
+
   # Add the legend manually
   p <- p + geom_point(data = legend_df, aes(x = 0, y = 0, fill = taxon), size = 0) +
     scale_fill_manual(values = taxon_colors, name = level) +
@@ -83,7 +84,7 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
     theme(legend.position = "right",
           legend.title = element_text(size = 12),
           legend.text = element_text(size = 10))
-  
+
   # Return the plot
   return(p)
 }

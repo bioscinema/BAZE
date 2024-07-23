@@ -24,7 +24,7 @@
 #' @return Returns a ggtree plot object with highlighted clades, labels, and relative abundance bars based on the specified taxonomic annotations.
 #'
 #' @importFrom ggtree ggtree geom_point geom_text2 geom_hilight
-#' @importFrom ggplot2 geom_segment 
+#' @importFrom ggplot2 geom_segment
 #' @importFrom dplyr filter arrange mutate
 #' @importFrom scales hue_pal
 #'
@@ -42,18 +42,18 @@
 #' }
 #'
 #' @export
-tax_rel <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=40,scale_size=0.5) {
+tax_rel <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=40, scale_size=0.5) {
   ## Generate taxonomy tree
   plottree <- function(tree, size=0.5, layout='circular', shape=21, fill='white', color='black') {
     ggtree(tree, size=size, layout = layout) +
-      geom_point(aes(size=I(nodeSize)), shape=shape, fill=fill, color=color,show.legend = FALSE)
+      geom_point(aes(size=I(nodeSize)), shape=shape, fill=fill, color=color, show.legend = FALSE)
   }
-  
+
   gtree <- plottree(tree)
-  short.labs <- letters
-  
+  short.labs <- get_unique_id(length(unique(anno.data$node)))
+
   get_offset <- function(x) { (x * 0.2 + 0.2)^2 }
-  
+
   get_angle <- function(node) {
     data <- gtree$data
     sp <- tidytree::offspring(data, node)$node
@@ -61,13 +61,13 @@ tax_rel <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     sp.df <- data[match(sp2, data$node),]
     mean(range(sp.df$angle))
   }
-  
+
   anno.data <- arrange(anno.data, node)
   hilight.color <- anno.data$color
   node_list <- anno.data$node
   node_ids <- (gtree$data %>% filter(label %in% node_list) %>% arrange(label))$node
   anno <- rep('white', nrow(gtree$data))
-  
+
   ## Extract phylum information from the labels
   gtree$data$phylum <- ifelse(grepl("p__", gtree$data$label), sub(".*(p__[^;]+).*", "\\1", gtree$data$label), NA)
   ## Propagate phylum information from internal nodes to tips
@@ -77,7 +77,7 @@ tax_rel <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     tip_nodes <- descendant_nodes[descendant_nodes %in% gtree$data$node[gtree$data$isTip]]
     gtree$data$phylum[gtree$data$node %in% tip_nodes] <- gtree$data$phylum[gtree$data$node == node]
   }
-  # print(gtree$data$phylum)
+
   ## Add highlight ... duplicated code
   for (i in 1:length(node_ids)) {
     n <- node_ids[i]
@@ -88,19 +88,19 @@ tax_rel <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     offset <- get_offset(nodeClass)
     gtree <- gtree + geom_hilight(node = n, fill = color, alpha = alpha, extend = offset)
   }
-  
+
   gtree$layers <- rev(gtree$layers)
-  
+
   ## Set nodeSize to NA for all nodes initially
   gtree$data$nodeSize <- NA
-  
+
   ## Set nodeSize for selected nodes
   selected_node_size <- 2  # Change this value as needed
   gtree$data$nodeSize[gtree$data$node %in% node_ids] <- selected_node_size
-  
+
   ## Add points to selected nodes only
-  gtree <- gtree + geom_point2(aes(size = I(nodeSize)), fill = anno, shape = 21,show.legend = FALSE)
-  
+  gtree <- gtree + geom_point2(aes(size = I(nodeSize)), fill = anno, shape = 21, show.legend = FALSE)
+
   ## Add labels
   short.labs.anno <- NULL
   for (i in 1:length(node_ids)) {
@@ -120,48 +120,31 @@ tax_rel <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     }
     offset <- get_offset(nodeClass) - 0.4
     angle <- get_angle(n) + 90
-    # Instead of geom_cladelabel, we will place labels using geom_text2
-    gtree <- gtree +
-      geom_text2(data = data.frame(node = n, label = lab, x = mapping$x, y = mapping$y), 
-                 aes(x = x, y = y, label = label), 
-                 size = 3 + sqrt(nodeClass), 
-                 angle = angle, 
-                 vjust = -0.5, 
-                 hjust = 0.5,show.legend = FALSE)
   }
-  
+
   if (is.null(short.labs.anno)) { return(gtree) }
-  
-  ## Merge short.labs.anno with gtree$data to get x and y coordinates
-  # short.labs.anno <- merge(short.labs.anno, gtree$data[, c("label", "x", "y")], by.x = "annot", by.y = "label")
-  # 
-  # ## Add short labels directly on the nodes
-  # gtree <- gtree + geom_text2(data = short.labs.anno, aes(x = x, y = y, label = lab), color = "black", size = 3, vjust = -1)
-  
-  ## Add legend for shapes
-  anno_shapes <- sapply(short.labs.anno$lab, utf8ToInt)
-  gtree <- gtree + geom_point(data = short.labs.anno,
-                              aes(x = 0, y = 0, shape = factor(annot)),
-                              size = 0, stroke = 0, show.legend = TRUE) +
-    guides(
-      shape = guide_legend(override.aes = list(size = 3, shape = anno_shapes))
-    ) +
-    theme(legend.position = "right",  # Adjust legend position
-          legend.title = element_blank())
-  
+
+  ## Combine short labels and annotations for the legend
+  short.labs.anno$legend <- paste(short.labs.anno$lab, short.labs.anno$annot, sep=": ")
+
+  gtree <- gtree + geom_point(data=short.labs.anno, aes(x=0, y=0, shape=factor(lab), fill=annot), size=0, stroke=0) +
+    guides(shape=guide_legend(override.aes=list(size=3), label.position="right"), fill=FALSE) +
+    theme(legend.position="right", legend.title=element_blank()) +
+    scale_shape_manual(values=rep(21, length(short.labs.anno$lab)), labels=short.labs.anno$legend)
+
   if (!is.null(gtree$data$taxaAbun)) {
     tip_nodes <- gtree$data %>% filter(isTip) %>% filter(!is.na(taxaAbun))
     relative_abundance <- tip_nodes %>%
       mutate(xstart = max(gtree$data$x) + 1,  # Positioning the bars outside the circle
              xend = xstart + taxaAbun * scale_size)  # Scale the relative abundance for better visualization
-    
+
     gtree <- gtree +
       geom_segment(data = relative_abundance,
                    aes(x = xstart, xend = xend, y = y, yend = y, color = phylum),
-                   size = 2,show.legend = FALSE) +
+                   size = 2, show.legend = FALSE) +
       guides(color="none")
   }
-  
+
   return(gtree)
 }
 

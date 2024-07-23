@@ -39,14 +39,17 @@
 #'
 #' @export
 plottax <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=40){
-  ##generate taxonomy tree
+  # Generate taxonomy tree
   plottree <- function(tree, size=0.5, layout='circular', shape=21, fill='white', color='black'){
-    ggtree(tree, size=size, layout = layout)  +
+    ggtree(tree, size=size, layout=layout) +
       geom_point(aes(size=I(nodeSize)), shape=shape, fill=fill, color=color)
   }
+
   gtree <- plottree(tree)
   short.labs <- get_unique_id(length(unique(anno.data$node)))
-  get_offset <- function(x) {(x*0.2+0.2)^2}
+
+  get_offset <- function(x) {(x*0.2 + 0.2)^2}
+
   get_angle <- function(node){
     data <- gtree$data
     sp <- tidytree::offspring(data, node)$node
@@ -54,74 +57,54 @@ plottax <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     sp.df <- data[match(sp2, data$node),]
     mean(range(sp.df$angle))
   }
+
   anno.data <- arrange(anno.data, node)
   hilight.color <- anno.data$color
   node_list <- anno.data$node
-  node_ids <- (gtree$data %>% filter(label %in% node_list ) %>% arrange(label))$node
+  node_ids <- (gtree$data %>% filter(label %in% node_list) %>% arrange(label))$node
   anno <- rep('white', nrow(gtree$data))
-  ## add hilight ... duplicated code
-  ## FIXME: duplicated code...
+
   for(i in 1:length(node_ids)){
     n <- node_ids[i]
     color <- hilight.color[i]
     anno[n] <- color
-    mapping <- gtree$data %>% filter(node == n)
-    nodeClass <- as.numeric(mapping$nodeClass)
-    offset <- get_offset(nodeClass)
-    gtree <-
-      gtree + geom_hilight(node=n, fill=color, alpha=alpha,
-                           extend=offset)
+    offset <- get_offset(as.numeric(gtree$data[gtree$data$node == n, "nodeClass"]))
+    gtree <- gtree + geom_hilight(node=n, fill=color, alpha=alpha, extend=offset)
   }
+
   gtree$layers <- rev(gtree$layers)
   gtree <- gtree + geom_point2(aes(size=I(nodeSize)), fill=anno, shape=21)
-  # gtree <- gtree + geom_point2(aes(size=10), fill=anno, shape=21)
-  ## add labels
+
   short.labs.anno <- NULL
   for(i in 1:length(node_ids)){
     n <- node_ids[i]
     mapping <- gtree$data %>% filter(node == n)
     nodeClass <- as.numeric(mapping$nodeClass)
-    if(nodeClass <= anno.depth){## species and strains
+    if(nodeClass <= anno.depth){
       lab <- short.labs[1]
       short.labs <- short.labs[-1]
-      # short.labs.anno <- paste0(short.labs.anno, sep='\n', paste0(lab, ': ', mapping$label))
       if(is.null(short.labs.anno)){
-        short.labs.anno = data.frame(lab=lab, annot = mapping$label, stringsAsFactors = F)
-      }else{
-        short.labs.anno = rbind(short.labs.anno,
-                                c(lab, mapping$label))
+        short.labs.anno <- data.frame(lab=lab, annot=mapping$label, stringsAsFactors=FALSE)
+      } else {
+        short.labs.anno <- rbind(short.labs.anno, data.frame(lab=lab, annot=mapping$label, stringsAsFactors=FALSE))
       }
-    }
-    else{
+    } else {
       lab <- mapping$label
     }
     offset <- get_offset(nodeClass) - 0.4
     angle <- get_angle(n) + 90
-    # gtree <- gtree +
-    #   geom_cladelabel(node=n, label=lab, angle=angle,
-    #                   fontsize=1.5+sqrt(nodeClass),
-    #                   offset=offset, barsize=0, hjust=0.5)
-    gtree <- gtree +
-      geom_text2(data = data.frame(node = n, label = lab, x = mapping$x, y = mapping$y),
-                 aes(x = x, y = y, label = label),
-                 size = 5 + sqrt(nodeClass),
-                 angle = angle,
-                 vjust = -0.5,
-                 hjust = 0.5)
+    gtree <- gtree + geom_text2(data=data.frame(node=n, label=lab, x=mapping$x, y=mapping$y),
+                                aes(x=x, y=y, label=label), size=5 + sqrt(nodeClass),
+                                angle=angle, vjust=-0.5, hjust=0.5)
   }
-  if(is.null(short.labs.anno)){return(gtree)}
-  # short.labs.anno <- merge(short.labs.anno, gtree$data[, c("label", "x", "y")], by.x = "annot", by.y = "label")
-  # gtree <- gtree + geom_text2(data = short.labs.anno, aes(x = x, y = y, label = lab), color = "black", size = 3, vjust = -1)
-  ## add short labels
-  anno_shapes = sapply(short.labs.anno$lab, utf8ToInt)
-  gtree + geom_point(data = short.labs.anno,
-                     aes(x=0, y=0, shape = factor(annot)),
-                     size=0, stroke=0) +
-    guides(
-      shape = guide_legend(override.aes = list(size=3, shape=anno_shapes))
-    ) +
-    theme(legend.position = "right",
-          legend.title = element_blank())
-    # theme(legend.position = c(1.5,0.5),
-    #       legend.title = element_blank())
+
+  if(is.null(short.labs.anno)){ return(gtree) }
+
+  # Combine short labels and annotations for the legend
+  short.labs.anno$legend <- paste(short.labs.anno$lab, short.labs.anno$annot, sep=": ")
+
+  gtree + geom_point(data=short.labs.anno, aes(x=0, y=0, shape=factor(lab), fill=annot), size=0, stroke=0) +
+    guides(shape=guide_legend(override.aes=list(size=3), label.position="right"), fill=FALSE) +
+    theme(legend.position="right", legend.title=element_blank()) +
+    scale_shape_manual(values=rep(21, length(short.labs.anno$lab)), labels=short.labs.anno$legend)
 }
