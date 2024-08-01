@@ -12,6 +12,3 @@ fix_duplicate_tax(physeq)
 \description{
 fix the duplicatae taxonomy names of a phyloseq object
 }
-\author{
-Chenghao Zhu, Chenhao Li, Guangchuang Yu
-}
