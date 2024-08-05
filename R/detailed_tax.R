@@ -126,7 +126,7 @@ detailed_tax <- function(ps, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno
   short.labs.anno$legend <- paste(short.labs.anno$lab, short.labs.anno$annot, sep=": ")
 
   gtree + geom_point(data=short.labs.anno, aes(x=0, y=0, shape=factor(lab), fill=annot), size=0, stroke=0) +
-    guides(shape=guide_legend(override.aes=list(size=3), label.position="right"), fill=FALSE) +
+    guides(shape=guide_legend(override.aes=list(size=3), label.position="right"), fill="none") +
     theme(legend.position="right", legend.title=element_blank()) +
     scale_shape_manual(values=rep(21, length(short.labs.anno$lab)), labels=short.labs.anno$legend)
 
