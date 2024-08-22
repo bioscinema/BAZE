@@ -69,8 +69,8 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
       p <- p + geom_hilight(node = node_index, fill = taxon_colors[taxon], alpha = 0.3, show.legend = TRUE)
 
       # Add clade labels outside the highlighted clades
-      p <- p + geom_cladelabel(node = node_index, label = taxon,
-                               fontsize = 3, offset = 1, barsize = 0, hjust = 0.5, angle = 0)
+      # p <- p + geom_cladelabel(node = node_index, label = taxon,
+      #                          fontsize = 3, offset = 1, barsize = 0, hjust = 0.5, angle = 0)
     }
   }
 
@@ -79,12 +79,15 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
 
   # Add the legend manually
   p <- p + geom_point(data = legend_df, aes(x = 0, y = 0, fill = taxon), size = 0) +
-    scale_fill_manual(values = taxon_colors, name = level) +
-    guides(fill = guide_legend(override.aes = list(size = 5, shape = 21))) +
+    # scale_fill_manual(values = taxon_colors, name = level) +
+    # guides(fill="none")+
+    guides(fill = guide_legend(override.aes = list(size=5,shape=21))) +
     theme(legend.position = "right",
           legend.title = element_text(size = 12),
-          legend.text = element_text(size = 10))
-
+          legend.text = element_text(size = 10),
+          legend.key = element_rect(fill="white",color = NA),
+          )
+  # geom_point(data = legend_df, aes(x = 0, y = 0, fill = taxon), size = 0) +
   # Return the plot
   return(p)
 }
