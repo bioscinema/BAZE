@@ -95,7 +95,7 @@ plottax <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
     angle <- get_angle(n) + 90
     gtree <- gtree + geom_text2(data=data.frame(node=n, label=lab, x=mapping$x, y=mapping$y),
                                 aes(x=x, y=y, label=label), size=5 + sqrt(nodeClass),
-                                angle=angle, vjust=-0.5, hjust=0.5)
+                                angle=angle, vjust=-0.5, hjust=0.5,color="red")
   }
 
   if(is.null(short.labs.anno)){ return(gtree) }
@@ -104,7 +104,7 @@ plottax <- function(tree, anno.data, alpha=0.2, anno.depth=3, anno.x=10, anno.y=
   short.labs.anno$legend <- paste(short.labs.anno$lab, short.labs.anno$annot, sep=": ")
 
   gtree + geom_point(data=short.labs.anno, aes(x=0, y=0, shape=factor(lab), fill=annot), size=0, stroke=0) +
-    guides(shape=guide_legend(override.aes=list(size=3), label.position="right"), fill=FALSE) +
+    guides(shape=guide_legend(override.aes=list(size=3,shape=NA), label.position="right"), fill=FALSE) +
     theme(legend.position="right", legend.title=element_blank()) +
     scale_shape_manual(values=rep(21, length(short.labs.anno$lab)), labels=short.labs.anno$legend)
 }
