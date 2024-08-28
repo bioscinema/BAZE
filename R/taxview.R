@@ -61,7 +61,7 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
     arrange(desc(Size))
 
   # Generate a color palette for the taxonomic levels, ordered by size
-  taxon_colors <- hue_pal()(nrow(taxon_sizes))
+  taxon_colors <- randomcoloR::distinctColorPalette(nrow(taxon_sizes))
   names(taxon_colors) <- factor(taxon_sizes$taxon)
   # print(names(taxon_colors))
   # print(taxon_sizes$taxon)
