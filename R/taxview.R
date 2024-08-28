@@ -51,44 +51,53 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
   # Extract taxonomy table
   tax <- as.data.frame(ps@tax_table)
 
-  # Generate a color palette for the taxonomic levels
-  taxon_colors <- distinctColorPalette(length(unique(tax[[level]])))
-  names(taxon_colors) <- unique(tax[[level]])
-
   # Create a mapping from tips to their taxonomy level
-  tip_labels <- data.frame(label = rownames(tax), taxon = tax[[level]])
+  tip_labels <- data.frame(label = rownames(tax), taxon = as.factor(tax[[level]]))
+
+  # Calculate the size of each taxon (number of tips)
+  taxon_sizes <- tip_labels %>%
+    group_by(taxon) %>%
+    summarise(Size = n()) %>%
+    arrange(desc(Size))
+
+  # Generate a color palette for the taxonomic levels, ordered by size
+  taxon_colors <- hue_pal()(nrow(taxon_sizes))
+  names(taxon_colors) <- factor(taxon_sizes$taxon)
+  # print(names(taxon_colors))
+  # print(taxon_sizes$taxon)
+
+  taxon_sizes$taxon <- factor(taxon_sizes$taxon, levels = taxon_sizes$taxon)
 
   # Create the ggtree plot
   p <- ggtree(tree, size=branch_thickness, layout=layout)
 
   # Highlight each taxon clade based on internal node labels and add clade labels
-  for (taxon in unique(tip_labels$taxon)) {
+  for (taxon in taxon_sizes$taxon) {
     node_label <- paste0(tolower(substr(level, 1, 1)), "__", taxon)
     if (node_label %in% tree@phylo[["node.label"]]) {
       node_index <- which(tree@phylo[["node.label"]] == node_label) + length(tree@phylo[["tip.label"]])
       p <- p + geom_hilight(node = node_index, fill = taxon_colors[taxon], alpha = 0.3)
 
-      # Add clade labels outside the highlighted clades
+      # Uncomment this line if you want to add clade labels
       # p <- p + geom_cladelabel(node = node_index, label = taxon,
       #                          fontsize = 3, offset = 1, barsize = 0, hjust = 0.5, angle = 0)
     }
   }
-
+  # print(taxon_colors)
   # Add a dummy dataframe to create the legend
-  legend_df <- data.frame(taxon = names(taxon_colors), fill = taxon_colors)
+  legend_df <- data.frame(taxon = factor(names(taxon_colors),levels = names(taxon_colors)), fill = taxon_colors)
+  print(str(legend_df))
 
   # Add the legend manually
   p <- p + geom_point(data = legend_df, aes(x = 0, y = 0, fill = taxon), size = 0) +
     scale_fill_manual(values = taxon_colors, name = level) +
-    # guides(fill="none")+
     guides(fill = guide_legend(override.aes = list(size=5,shape=21))) +
     theme(legend.position = "right",
           legend.title = element_text(size = 12),
           legend.text = element_text(size = 10),
           legend.key = element_rect(fill="white",color = NA),
-          legend.background = element_blank()
-          )
-  # geom_point(data = legend_df, aes(x = 0, y = 0, fill = taxon), size = 0) +
+          legend.background = element_blank())
+
   # Return the plot
   return(p)
 }
