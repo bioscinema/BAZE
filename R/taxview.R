@@ -73,7 +73,7 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
 
   # Highlight each taxon clade based on internal node labels and add clade labels
   for (taxon in taxon_sizes$taxon) {
-    print(taxon)
+    # print(taxon)
     node_label <- paste0(tolower(substr(level, 1, 1)), "__", taxon)
     if (node_label %in% tree@phylo[["node.label"]]) {
       node_index <- which(tree@phylo[["node.label"]] == node_label) + length(tree@phylo[["tip.label"]])
@@ -87,7 +87,7 @@ taxview <- function(ps, tree, branch_thickness=0.5, layout='circular', level="Ph
   # print(taxon_colors)
   # Add a dummy dataframe to create the legend
   legend_df <- data.frame(taxon = factor(names(taxon_colors),levels = names(taxon_colors)), fill = taxon_colors)
-  print(legend_df$taxon)
+  # print(legend_df$taxon)
 
   # Add the legend manually
   p <- p + geom_point(data = legend_df, aes(x = 0, y = 0, fill = taxon), size = 0) +
