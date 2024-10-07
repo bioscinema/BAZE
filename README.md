@@ -24,7 +24,7 @@ ps1 <- fix_duplicate_tax(ps)
 
 ### Convert phyloseq to treeio data and generate plot at phylum level
 tr1 <- phy_to_tax(ps1)
-p <- taxview(ps1, tr1, branch_thickness=0.5, levele="Phylum")
+p <- taxview(ps1, tr1, branch_thickness=0.5, level="Phylum")
 ```
 
 ![ibd_select](https://github.com/bioscinema/BAZE/assets/90227639/9b225374-df76-466a-8d64-73af1cf900f6)
