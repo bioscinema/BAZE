@@ -77,6 +77,7 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
     Sy <- stand$Sy
     Yobs_train <- Y_train * stand$Sy + stand$muy
     Yobs_test <- Y_test * stand$Sy + stand$muy
+    # Yobs_test <- (Y_test-stand$muy)/stand$Sy
     # Xobs <- X * diag(stand$Sx) + stand$mux
   }
 
@@ -116,6 +117,7 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
     # print(length(Yhat[,1]))
     Yhat[, 1] <- stand$muy + Sy * X_test[, index] %*% tembeta
     MSE <- numeric(nburnin + niter + 1)
+    # MSE[1] <- mean((Yobs_test - Yhat[, 1])^2)
     MSE[1] <- 1 / n * t(Yobs_test - Yhat[, 1]) %*% (Yobs_test - Yhat[, 1])
     nselect <- numeric(nburnin + niter + 1)
     nselect[1] <- nop
@@ -195,6 +197,7 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
           # print(dim(Yhat[,i+1]))
           Yhat[, i + 1] <- stand$muy + Sy * X_test[, index] %*% tembeta
           MSE[i + 1] <- 1 / (n*(1-split_rate)) * t(Yobs_test - Yhat[, i + 1]) %*% (Yobs_test - Yhat[, i + 1])
+          # MSE[i + 1] <- mean((Yobs_test - Yhat[, i + 1])^2)
           nselect[i + 1] <- tn - 1
         }
 
@@ -251,6 +254,7 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
           betahat[index, i + 1] <- Sy * invSx[index, index] %*% tembeta
           Yhat[, i + 1] <- stand$muy + Sy * X_test[, index] %*% tembeta
           MSE[i + 1] <- 1 / (n*(1-split_rate)) * t(Yobs_test - Yhat[, i + 1]) %*% (Yobs_test - Yhat[, i + 1])
+          # MSE[i + 1] <- mean((Yobs_test - Yhat[, i + 1])^2)
           nselect[i + 1] <- tn
         }
       }else {
@@ -283,5 +287,5 @@ gibbsgamma <- function(nburnin, niter, p, nop, Y, X, N, a, Q, n, tau, nu, omega,
     #print(colSums(gamma[nburnin:(nburnin + niter), ]))
     gammaresult <- colSums(gamma[nburnin:(nburnin + niter), ])
   }
-  return(list(gamma = gamma, betahat = betahat, gammaresult = gammaresult, MSE = MSE, nselect = nselect, Yhat=Yhat))
+  return(list(gamma = gamma, betahat = betahat, gammaresult = gammaresult, MSE = MSE, nselect = nselect, Yhat=Yhat, Ytest=Yobs_test))
 }
