@@ -42,7 +42,6 @@
 #' }
 #'
 #' @import phyloseq
-#' @import ggtree
 #' @import scales
 #' @import randomcoloR
 #'

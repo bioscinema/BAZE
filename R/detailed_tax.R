@@ -17,7 +17,7 @@
 #' @examples
 #' \dontrun{
 #' ps <- phyloseq_object  # Replace with actual phyloseq object
-#' anno.data <- data.frame(node = c("node1", "node2"), color = c("red", "blue"))  # Replace with actual annotation data
+#' anno.data <- data.frame(node = c("node1", "node2"), color = c("red", "blue"))
 #' plot <- detailed_tax(ps, anno.data, alpha=0.2, anno.depth=3, layout="rectangular")
 #' print(plot)
 #' }

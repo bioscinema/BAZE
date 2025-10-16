@@ -1,2 +1,9 @@
-^BAZE\.Rproj$
+^.*\.Rproj$
 ^\.Rproj\.user$
+^\.git$
+^\.gitignore$
+^\.gitattributes$
+^\.Rhistory$
+^README\.md$
+^\.DS_Store$
+
